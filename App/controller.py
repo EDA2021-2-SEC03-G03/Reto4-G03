@@ -57,12 +57,29 @@ def loadData(analyzer, airports_file, country_file, routes_file):
                                 delimiter=",")                            
     for airport in DictAirports:
         model.addAirport(analyzer, airport)
-    for city in DictCountry:
-        model.addCountry(analyzer, city)
+        model.addAirportND(analyzer, airport)
     for route in DictRoutes:
         model.addRoute(analyzer, route)
+        model.addRouteND(analyzer, route)
+    for city in DictCountry:
+        model.addCity(analyzer, city)
+        model.addCities(analyzer, city)
     
     return analyzer
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
+
+#---------------------------------------------
+#Carga de datos 
+def totalStops(analyzer, grafo):
+    return model.totalStops(analyzer, grafo)
+
+def totalConnections(analyzer, grafo):
+    return model.totalConnections(analyzer, grafo)
+
+def totalCities(analyzer):
+    return model.totalCities(analyzer)
+
+def totalCities2(analyzer):
+    return model.totalCities2(analyzer)

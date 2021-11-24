@@ -27,7 +27,8 @@
 
 import config
 from DISClib.ADT.graph import gr
-from DISClib.ADT import map as m
+from DISClib.ADT import map as mp
+from DISClib.ADT import orderedmap as om
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import list as lt
 from DISClib.Utils import error as error
@@ -45,11 +46,13 @@ def newAnalyzer():
                     'connections_d': None,
                     'connections_nd': None,
                     'cities': None,
+                    'cities2': None,
                     'paths': None
                     }
 
-        analyzer['cities'] = m.newMap(numelements=4000,
-                                    maptype='PROBING')
+        analyzer['cities'] = om.newMap(omaptype = 'RBT',
+                                      comparefunction = compare)
+        analyzer['cities2'] = lt.newList('ARRAY_LIST')
 
         analyzer['connections_d'] = gr.newGraph(datastructure='ADJ_LIST',
                                             directed=True,
@@ -65,16 +68,20 @@ def newAnalyzer():
         error.reraise(exp, 'model:newAnalyzer')
 
 # Funciones para agregar informacion al catalogo
-def addCountry(analyzer, country):
-    m.put(analyzer['cities'], country['id'], country)
-def addRoute(analyzer, route):
-    """
-    Adiciona un arco entre dos estaciones
-    """
-    edge = gr.getEdge(analyzer['connections_d'], route['Departure'], route['Destination'])
-    if edge is None:
-        gr.addEdge(analyzer['connections_d'], route['Departure'], route['Destination'],route['distance_km'])
+def addCity(analyzer, city):
+    entry = om.get(analyzer['cities'], city['city'])
+    if entry is None:
+        newEntry = newdata()
+        om.put(analyzer['cities'], city['city'], newEntry)
+    else:
+        newEntry = me.getValue(entry)
+    lt.addLast(newEntry, city)
     return analyzer
+
+def addCities(analyzer, city):
+    lt.addLast(analyzer['cities2'], city)
+    return analyzer
+
 def addAirport(analyzer, airport):
     """
     Adiciona un aeropuerto como un vertice del grafo
@@ -84,9 +91,62 @@ def addAirport(analyzer, airport):
             gr.insertVertex(analyzer['connections_d'],airport['IATA'])
     except Exception as exp:
         error.reraise(exp, 'model:addstop')
+
+def addAirportND(analyzer, airport):
+    """
+    Adiciona un aeropuerto como un vertice del grafo
+    """
+    try:
+        if not gr.containsVertex(analyzer['connections_nd'], airport['IATA']):
+            gr.insertVertex(analyzer['connections_nd'],airport['IATA'])
+    except Exception as exp:
+        error.reraise(exp, 'model:addstop')
+
+def addRoute(analyzer, route):
+    """
+    Adiciona un arco entre dos estaciones
+    """
+    edge = gr.getEdge(analyzer['connections_d'], route['Departure'], route['Destination'])
+    if edge is None:
+        gr.addEdge(analyzer['connections_d'], route['Departure'], route['Destination'],route['distance_km'])
+    return analyzer
+
+def addRouteND(analyzer, route):
+    """
+    Adiciona un arco entre dos estaciones
+    """
+    edge = gr.getEdge(analyzer['connections_nd'], route['Departure'], route['Destination'])
+    if edge is None:
+        gr.addEdge(analyzer['connections_nd'], route['Departure'], route['Destination'],route['distance_km'])
+    return analyzer
+
 # Funciones para creacion de datos
+def newdata():
+    entry = lt.newList('SINGLE_LINKED', compare)
+    return entry
 
 # Funciones de consulta
+
+#Carga de Datos:
+
+def totalStops(analyzer, grafo):
+    """
+    Retorna el total de estaciones (vertices) del grafo
+    """
+    return gr.numVertices(analyzer[grafo])
+
+
+def totalConnections(analyzer, grafo):
+    """
+    Retorna el total arcos del grafo
+    """
+    return gr.numEdges(analyzer[grafo])
+
+def totalCities(analyzer): 
+    return om.size(analyzer['cities'])
+
+def totalCities2(analyzer): 
+    return lt.size(analyzer['cities2'])
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compareStopIds(stop, keyvaluestop):
@@ -97,6 +157,15 @@ def compareStopIds(stop, keyvaluestop):
     if (stop == stopcode):
         return 0
     elif (stop > stopcode):
+        return 1
+    else:
+        return -1
+
+def compare(eve1, eve2):
+  
+    if (eve1 == eve2):
+        return 0
+    elif (eve1 > eve2):
         return 1
     else:
         return -1

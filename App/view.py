@@ -58,6 +58,7 @@ airpots_file = 'airports_full.csv'
 country_file = 'worldcities.csv'
 routes_file = 'routes_full.csv'
 initialStation = None
+analyzer = None
 """
 Menu principal
 """
@@ -65,12 +66,54 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
-        cont = controller.init()
-        print("Cargando información de los archivos ....")
-        controller.loadData(cont, airpots_file, country_file, routes_file)
-        print(cont["connections_d"])
+        analyzer = controller.init()
+        print("Cargando información de los aeropuertos ....")
+        controller.loadData(analyzer, airpots_file, country_file, routes_file)
+        #print(cont["connections_d"])
+        #print(analyzer['cities'])
+        vertices_d = controller.totalStops(analyzer, 'connections_d')
+        arcos_d = controller.totalConnections(analyzer, 'connections_d')
+
+        vertices_nd = controller.totalStops(analyzer, 'connections_nd')
+        arcos_nd = controller.totalConnections(analyzer, 'connections_nd')
+
+        cities = controller.totalCities2(analyzer)
+
+        print('El total de vértices (aeropuertos) del grafo dirigido son:' + str(vertices_d))
+        print('El total de arcos (rutas aereas) del grafo dirigido son:' + str(arcos_d))
+
+        print("------------------------------------------------------------------------------------------------")
+
+        print('El total de vértices (aeropuertos) del grafo no dirigido son:' + str(vertices_nd))
+        print('El total de arcos (rutas aereas) del grafo no dirigido son:' + str(arcos_nd))
+
+        print("------------------------------------------------------------------------------------------------")
+        print('El total de ciudades es: ' + str(cities))
+
+        print("------------------------------------------------------------------------------------------------")
+        print('La primera ciudad cargada:')
+        print(analyzer['cities2']['elements'][0])
+
+        print("------------------------------------------------------------------------------------------------")
+        print('La última ciudad cargada:')
+        print(analyzer['cities2']['elements'][-1:])
+
+
     elif int(inputs[0]) == 2:
         pass
+
+    elif int(inputs[0]) == 3:
+        pass
+
+    elif int(inputs[0]) == 4:
+        pass
+
+    elif int(inputs[0]) == 5:
+        pass
+
+    elif int(inputs[0]) == 6:
+        pass
+
 
     else:
         sys.exit(0)
