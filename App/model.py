@@ -65,6 +65,8 @@ def newAnalyzer():
         error.reraise(exp, 'model:newAnalyzer')
 
 # Funciones para agregar informacion al catalogo
+def addCountry(analyzer, country):
+    m.put(analyzer['countries'], country['CountryName'], country)
 
 # Funciones para creacion de datos
 
