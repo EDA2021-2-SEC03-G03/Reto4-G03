@@ -23,6 +23,8 @@
 import config as cf
 import model
 import csv
+from DISClib.ADT.graph import gr
+from DISClib.DataStructures import adjlist as alt
 
 
 """
@@ -57,14 +59,19 @@ def loadData(analyzer, airports_file, country_file, routes_file):
                                 delimiter=",")                            
     for airport in DictAirports:
         model.addAirport(analyzer, airport)
-        model.addAirportND(analyzer, airport)
+        model.addAirportLt(analyzer, airport)
     for route in DictRoutes:
         model.addRoute(analyzer, route)
-        model.addRouteND(analyzer, route)
+    
+    model.addRouteND(analyzer)
     for city in DictCountry:
         model.addCity(analyzer, city)
         model.addCities(analyzer, city)
     
+    
+    #print(analyzer['paths']['elements'][0:10])
+
+
     return analyzer
 # Funciones de ordenamiento
 

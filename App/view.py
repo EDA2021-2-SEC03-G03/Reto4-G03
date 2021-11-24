@@ -24,8 +24,11 @@ import config as cf
 import sys
 import controller
 from DISClib.ADT import list as lt
+from DISClib.ADT.graph import gr
 assert cf
 
+defaul_time = 1000
+sys.setrecursionlimit(defaul_time*10)
 
 """
 La vista se encarga de la interacción con el usuario
@@ -69,7 +72,7 @@ while True:
         analyzer = controller.init()
         print("Cargando información de los aeropuertos ....")
         controller.loadData(analyzer, airpots_file, country_file, routes_file)
-        #print(cont["connections_d"])
+        #print(analyzer["connections_d"])
         #print(analyzer['cities'])
         vertices_d = controller.totalStops(analyzer, 'connections_d')
         arcos_d = controller.totalConnections(analyzer, 'connections_d')
@@ -77,7 +80,8 @@ while True:
         vertices_nd = controller.totalStops(analyzer, 'connections_nd')
         arcos_nd = controller.totalConnections(analyzer, 'connections_nd')
 
-        cities = controller.totalCities2(analyzer)
+        cities = controller.totalCities(analyzer)
+        airportLt = analyzer['airports']
 
         print('El total de vértices (aeropuertos) del grafo dirigido son:' + str(vertices_d))
         print('El total de arcos (rutas aereas) del grafo dirigido son:' + str(arcos_d))
@@ -90,13 +94,15 @@ while True:
         print("------------------------------------------------------------------------------------------------")
         print('El total de ciudades es: ' + str(cities))
 
+        #Name,City,Country,IATA,Latitude,Longitude
         print("------------------------------------------------------------------------------------------------")
-        print('La primera ciudad cargada:')
-        print(analyzer['cities2']['elements'][0])
+        print('El primer aeropuerto cargado:')
+        print(airportLt['elements'][0])
 
         print("------------------------------------------------------------------------------------------------")
-        print('La última ciudad cargada:')
-        print(analyzer['cities2']['elements'][-1:])
+        print('El último aeropuerto cargado:')
+        print(airportLt['elements'][-1:])
+     
 
 
     elif int(inputs[0]) == 2:

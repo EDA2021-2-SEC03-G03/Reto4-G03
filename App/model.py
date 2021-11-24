@@ -47,12 +47,13 @@ def newAnalyzer():
                     'connections_nd': None,
                     'cities': None,
                     'cities2': None,
+                    'airports': None,
                     'paths': None
                     }
 
         analyzer['cities'] = om.newMap(omaptype = 'RBT',
                                       comparefunction = compare)
-        analyzer['cities2'] = lt.newList('ARRAY_LIST')
+        analyzer['cities2'] = lt.newList('ARRAY_LIST', cmpfunction=compareID)
 
         analyzer['connections_d'] = gr.newGraph(datastructure='ADJ_LIST',
                                             directed=True,
@@ -62,6 +63,8 @@ def newAnalyzer():
                                             directed=False,
                                             size=5000,
                                             comparefunction=compareStopIds)
+        analyzer['airports'] = lt.newList('ARRAY_LIST')
+        analyzer['paths'] = lt.newList('ARRAY_LIST')
 
         return analyzer
     except Exception as exp:
@@ -69,10 +72,10 @@ def newAnalyzer():
 
 # Funciones para agregar informacion al catalogo
 def addCity(analyzer, city):
-    entry = om.get(analyzer['cities'], city['city'])
+    entry = om.get(analyzer['cities'], city['id'])
     if entry is None:
         newEntry = newdata()
-        om.put(analyzer['cities'], city['city'], newEntry)
+        om.put(analyzer['cities'], city['id'], newEntry)
     else:
         newEntry = me.getValue(entry)
     lt.addLast(newEntry, city)
@@ -82,6 +85,10 @@ def addCities(analyzer, city):
     lt.addLast(analyzer['cities2'], city)
     return analyzer
 
+def addAirportLt(analyzer, airport):
+    lt.addLast(analyzer['airports'], airport)
+    return analyzer
+
 def addAirport(analyzer, airport):
     """
     Adiciona un aeropuerto como un vertice del grafo
@@ -89,15 +96,6 @@ def addAirport(analyzer, airport):
     try:
         if not gr.containsVertex(analyzer['connections_d'], airport['IATA']):
             gr.insertVertex(analyzer['connections_d'],airport['IATA'])
-    except Exception as exp:
-        error.reraise(exp, 'model:addstop')
-
-def addAirportND(analyzer, airport):
-    """
-    Adiciona un aeropuerto como un vertice del grafo
-    """
-    try:
-        if not gr.containsVertex(analyzer['connections_nd'], airport['IATA']):
             gr.insertVertex(analyzer['connections_nd'],airport['IATA'])
     except Exception as exp:
         error.reraise(exp, 'model:addstop')
@@ -109,20 +107,32 @@ def addRoute(analyzer, route):
     edge = gr.getEdge(analyzer['connections_d'], route['Departure'], route['Destination'])
     if edge is None:
         gr.addEdge(analyzer['connections_d'], route['Departure'], route['Destination'],route['distance_km'])
+        lt.addLast(analyzer['paths'],route)
     return analyzer
 
-def addRouteND(analyzer, route):
+def addRouteND(analyzer):
     """
     Adiciona un arco entre dos estaciones
     """
-    edge = gr.getEdge(analyzer['connections_nd'], route['Departure'], route['Destination'])
-    if edge is None:
-        gr.addEdge(analyzer['connections_nd'], route['Departure'], route['Destination'],route['distance_km'])
+    route = lt.newList('ARRAY_LIST')
+    r1=None
+    r2=None
+    for a in lt.iterator(analyzer['paths']):
+        r1 = gr.getEdge(analyzer['connections_d'], a['Departure'], a['Destination'])
+        r2 = gr.getEdge(analyzer['connections_d'], a['Destination'], a['Departure'])
+        if r1 is not None and r2 is not None:
+            lt.addLast(route, a)
+
+    for r in lt.iterator(route):
+        edge = gr.getEdge(analyzer['connections_nd'], r['Departure'], r['Destination'])
+        if edge is None:
+            gr.addEdge(analyzer['connections_nd'], r['Departure'], r['Destination'],r['distance_km'])
+
     return analyzer
 
 # Funciones para creacion de datos
 def newdata():
-    entry = lt.newList('SINGLE_LINKED', compare)
+    entry = lt.newList('SINGLE_LINKED', compareID)
     return entry
 
 # Funciones de consulta
@@ -148,6 +158,7 @@ def totalCities(analyzer):
 def totalCities2(analyzer): 
     return lt.size(analyzer['cities2'])
 
+
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compareStopIds(stop, keyvaluestop):
     """
@@ -169,5 +180,13 @@ def compare(eve1, eve2):
         return 1
     else:
         return -1
+
+def compareID(a1, a2):
+    if int(a1['id']) < int(a2['id']):
+        return -1
+    elif int(a1['id']) == int(a2['id']):
+        return 0
+    else:
+        return 1
 
 # Funciones de ordenamiento
