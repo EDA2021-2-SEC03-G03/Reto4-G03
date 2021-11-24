@@ -45,17 +45,11 @@ def newAnalyzer():
                     'connections_d': None,
                     'connections_nd': None,
                     'countries': None,
-                    'landings': None,
-                    'components': None,
                     'paths': None
                     }
 
         analyzer['countries'] = m.newMap(numelements=2,
                                     maptype='PROBING')
-
-        analyzer['landings'] = m.newMap(numelements=2,
-                                    maptype='PROBING',
-                                    comparefunction=compareStopIds)
 
         analyzer['connections_d'] = gr.newGraph(datastructure='ADJ_LIST',
                                             directed=True,
