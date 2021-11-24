@@ -49,6 +49,15 @@ def printMenu():
 
 catalog = None
 
+# ___________________________________________________
+#  Variables
+# ___________________________________________________
+
+
+airpots_file = 'airports_full.csv'
+country_file = 'worldcities.csv'
+routes_file = 'routes_full.csv'
+initialStation = None
 """
 Menu principal
 """
@@ -56,11 +65,19 @@ while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
+        cont = controller.init()
         print("Cargando información de los archivos ....")
-
+        controller.loadData(cont, airpots_file, country_file, routes_file)
+        print(cont["connections_d"])
     elif int(inputs[0]) == 2:
         pass
 
     else:
         sys.exit(0)
 sys.exit(0)
+
+if __name__ == "__main__":
+    threading.stack_size(67108864)  # 64MB stack
+    sys.setrecursionlimit(2 ** 20)
+    thread = threading.Thread(target=thread_cycle)
+    thread.start()

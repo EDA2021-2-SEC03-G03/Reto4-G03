@@ -44,11 +44,11 @@ def newAnalyzer():
         analyzer = {
                     'connections_d': None,
                     'connections_nd': None,
-                    'countries': None,
+                    'cities': None,
                     'paths': None
                     }
 
-        analyzer['countries'] = m.newMap(numelements=2,
+        analyzer['cities'] = m.newMap(numelements=4000,
                                     maptype='PROBING')
 
         analyzer['connections_d'] = gr.newGraph(datastructure='ADJ_LIST',
@@ -66,8 +66,24 @@ def newAnalyzer():
 
 # Funciones para agregar informacion al catalogo
 def addCountry(analyzer, country):
-    m.put(analyzer['countries'], country['CountryName'], country)
-
+    m.put(analyzer['cities'], country['id'], country)
+def addRoute(analyzer, route):
+    """
+    Adiciona un arco entre dos estaciones
+    """
+    edge = gr.getEdge(analyzer['connections_d'], route['Departure'], route['Destination'])
+    if edge is None:
+        gr.addEdge(analyzer['connections_d'], route['Departure'], route['Destination'],route['distance_km'])
+    return analyzer
+def addAirport(analyzer, airport):
+    """
+    Adiciona un aeropuerto como un vertice del grafo
+    """
+    try:
+        if not gr.containsVertex(analyzer['connections_d'], airport['IATA']):
+            gr.insertVertex(analyzer['connections_d'],airport['IATA'])
+    except Exception as exp:
+        error.reraise(exp, 'model:addstop')
 # Funciones para creacion de datos
 
 # Funciones de consulta
