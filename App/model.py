@@ -25,12 +25,13 @@
  """
 
 
-import config as cf
-from DISClib.ADT import list as lt
-from DISClib.ADT import map as mp
+import config
+from DISClib.ADT.graph import gr
+from DISClib.ADT import map as m
 from DISClib.DataStructures import mapentry as me
-from DISClib.Algorithms.Sorting import shellsort as sa
-assert cf
+from DISClib.ADT import list as lt
+from DISClib.Utils import error as error
+assert config
 
 """
 Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
@@ -38,6 +39,36 @@ los mismos.
 """
 
 # Construccion de modelos
+def newAnalyzer():
+    try:
+        analyzer = {
+                    'connections_d': None,
+                    'connections_nd': None,
+                    'countries': None,
+                    'landings': None,
+                    'components': None,
+                    'paths': None
+                    }
+
+        analyzer['countries'] = m.newMap(numelements=2,
+                                    maptype='PROBING')
+
+        analyzer['landings'] = m.newMap(numelements=2,
+                                    maptype='PROBING',
+                                    comparefunction=compareStopIds)
+
+        analyzer['connections_d'] = gr.newGraph(datastructure='ADJ_LIST',
+                                            directed=True,
+                                            size=300,
+                                            comparefunction=compareStopIds)
+        analyzer['connections_nd'] = gr.newGraph(datastructure='ADJ_LIST',
+                                            directed=False,
+                                            size=5000,
+                                            comparefunction=compareStopIds)
+
+        return analyzer
+    except Exception as exp:
+        error.reraise(exp, 'model:newAnalyzer')
 
 # Funciones para agregar informacion al catalogo
 
@@ -46,5 +77,16 @@ los mismos.
 # Funciones de consulta
 
 # Funciones utilizadas para comparar elementos dentro de una lista
+def compareStopIds(stop, keyvaluestop):
+    """
+    Compara dos estaciones
+    """
+    stopcode = keyvaluestop['key']
+    if (stop == stopcode):
+        return 0
+    elif (stop > stopcode):
+        return 1
+    else:
+        return -1
 
 # Funciones de ordenamiento
