@@ -86,12 +86,12 @@ while True:
         print('El total de vértices (aeropuertos) del grafo dirigido son:' + str(vertices_d))
         print('El total de arcos (rutas aereas) del grafo dirigido son:' + str(arcos_d))
 
-        print("------------------------------------------------------------------------------------------------")
+        print("----------------------------------------------------------------------------------")
 
         print('El total de vértices (aeropuertos) del grafo no dirigido son:' + str(vertices_nd))
         print('El total de arcos (rutas aereas) del grafo no dirigido son:' + str(arcos_nd))
 
-        print("------------------------------------------------------------------------------------------------")
+        print("----------------------------------------------------------------------------------")
         print('El total de ciudades es: ' + str(cities))
 
         #Name,City,Country,IATA,Latitude,Longitude
@@ -106,7 +106,16 @@ while True:
 
 
     elif int(inputs[0]) == 2:
-        pass
+        topx = int(input("Ingrese el número de aeropuertos quiere ver: "))
+        data = controller.getRoutesbyAirpoirt(analyzer)
+        if topx > lt.size(data):
+            topx= lt.size(data)
+        data2 = lt.subList(data,1,topx)
+        print('TOP'+ str(topx) +'AEROPUERTOS Y SU NUMERO DE CONEXIONES: ')
+        i=0
+        for a in lt.iterator(data2):
+            print(str(i)+'.\t'+ str(a['info']['Name'])+' ('+ str(a['IATA'])+ '): '+ str(a['num_connections']))
+            i +=1
 
     elif int(inputs[0]) == 3:
         pass

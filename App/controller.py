@@ -69,14 +69,17 @@ def loadData(analyzer, airports_file, country_file, routes_file):
         model.addCities(analyzer, city)
     
     
-    #print(analyzer['paths']['elements'][0:10])
+    #print(analyzer['map_airports']['elements'][0:10])
 
 
     return analyzer
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo
-
+#_______________________________________________
+#Req 1
+def getRoutesbyAirpoirt(analyzer):
+    return model.getRoutesbyAirport(analyzer)
 #---------------------------------------------
 #Carga de datos 
 def totalStops(analyzer, grafo):

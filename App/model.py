@@ -26,9 +26,10 @@
 
 
 import config
-from DISClib.ADT.graph import gr
+from DISClib.ADT.graph import degree, getEdge, gr
 from DISClib.ADT import map as mp
 from DISClib.ADT import orderedmap as om
+from DISClib.Algorithms.Sorting import mergesort as ms
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import list as lt
 from DISClib.Utils import error as error
@@ -63,6 +64,8 @@ def newAnalyzer():
                                             directed=False,
                                             size=5000,
                                             comparefunction=compareStopIds)
+        analyzer['map_airports'] = om.newMap(omaptype = 'RBT',
+                                      comparefunction = compare)
         analyzer['airports'] = lt.newList('ARRAY_LIST')
         analyzer['paths'] = lt.newList('ARRAY_LIST')
 
@@ -97,6 +100,9 @@ def addAirport(analyzer, airport):
         if not gr.containsVertex(analyzer['connections_d'], airport['IATA']):
             gr.insertVertex(analyzer['connections_d'],airport['IATA'])
             gr.insertVertex(analyzer['connections_nd'],airport['IATA'])
+            karen = lt.newList(datastructure='ARRAY_LIST')
+            lt.addLast(karen,airport)
+            om.put(analyzer['map_airports'],airport['IATA'],airport)
     except Exception as exp:
         error.reraise(exp, 'model:addstop')
 
@@ -157,6 +163,25 @@ def totalCities(analyzer):
 
 def totalCities2(analyzer): 
     return lt.size(analyzer['cities2'])
+#___________________________________________________
+#Req 1
+def getRoutesbyAirport(analyzer):
+    rock = analyzer['connections_d']
+    list_airports = lt.newList(datastructure='ARRAY_LIST')
+    airports = gr.vertices(rock)
+    for airport in lt.iterator(airports):
+        indegree = gr.indegree(rock, airport)
+        outdegree = gr.outdegree(rock, airport)
+        suma = indegree+outdegree
+        info = om.get(analyzer['map_airports'],airport)['value']
+        dic = {'IATA': airport, 'num_connections': suma, 'info': info}
+        if suma >= 2:
+            pass
+            #checker = gr.edges(analyzer["connections_nd"])
+        lt.addLast(list_airports, dic)
+        
+    ms.sort(list_airports,compareReq1)
+    return list_airports
 
 
 # Funciones utilizadas para comparar elementos dentro de una lista
@@ -188,5 +213,7 @@ def compareID(a1, a2):
         return 0
     else:
         return 1
+def compareReq1(a1,a2):
+    return a1['num_connections'] > a2['num_connections']
 
 # Funciones de ordenamiento
