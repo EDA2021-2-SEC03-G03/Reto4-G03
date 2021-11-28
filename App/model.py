@@ -29,6 +29,7 @@ import config
 from DISClib.ADT.graph import degree, getEdge, gr
 from DISClib.ADT import map as mp
 from DISClib.ADT import orderedmap as om
+from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Sorting import mergesort as ms
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import list as lt
@@ -48,6 +49,7 @@ def newAnalyzer():
                     'connections_nd': None,
                     'cities': None,
                     'cities2': None,
+                    'components': None,
                     'airports': None,
                     'paths': None
                     }
@@ -182,7 +184,40 @@ def getRoutesbyAirport(analyzer):
         
     ms.sort(list_airports,compareReq1)
     return list_airports
+#___________________________________________________
+#Req 2
+def getConnectionsByIATA(analyzer, IATA1, IATA2):
+    grafo_d = analyzer['connections_d']
+    #print(grafo_d)
+    analyzer['components'] = scc.KosarajuSCC(grafo_d)
+    #print(analyzer['components'])
+    res1 = scc.connectedComponents(analyzer['components']) #Verificar si dos aeropuertos están en el mismo clúster
+    res2 = scc.stronglyConnected(analyzer['components'], IATA1, IATA2) #Número total de cúlsteres presentes en el grafo dirigido
+    return res1, res2 
 
+    """
+    grafo_d = analyzer['connections_d']
+    #print(grafo_d)
+    analyzer['components'] = scc.KosarajuSCC(grafo_d)
+    res1 = scc.connectedComponents(analyzer['components']) #Verificar si dos aeropuertos están en el mismo clúster
+    res2 = scc.stronglyConnected(analyzer['components'], IATA1, IATA2) #Número total de cúlsteres presentes en el grafo dirigido
+
+    return res1, res2
+    
+    if gr.containsVertex(analyzer['connections'], landing1) and gr.containsVertex(analyzer['connections'], landing2) == True:
+            tupla = controller.requerimiento1(analyzer, landing1, landing2)
+            respuesta = tupla[0]
+            print('El número de componentes conectados es: ' + str(respuesta[0]))
+            if respuesta[1] == True:
+                print('Los dos landing points dados están en el mismo cluster')
+            else:
+                print('Los dos landing points dados no están en el mismo cluster')
+    """ 
+
+
+
+#___________________________________________________
+#Req 3
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compareStopIds(stop, keyvaluestop):

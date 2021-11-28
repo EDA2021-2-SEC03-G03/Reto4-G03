@@ -106,6 +106,7 @@ while True:
 
 
     elif int(inputs[0]) == 2:
+        #Req 1
         topx = int(input("Ingrese el número de aeropuertos quiere ver: "))
         data = controller.getRoutesbyAirpoirt(analyzer)
         if topx > lt.size(data):
@@ -118,9 +119,23 @@ while True:
             i +=1
 
     elif int(inputs[0]) == 3:
-        pass
+        #Req2 
+        IATA1 = input('Ingrese el código IATA del aeropuerto 1: ')
+        IATA2 = input('Ingrese el código IATA del aeropuerto 2: ')
+        if gr.containsVertex(analyzer['connections_d'], IATA1) and gr.containsVertex(analyzer['connections_d'], IATA2) == True:
+            tupla = controller.getConnectionsByIATA(analyzer, IATA1, IATA2)
+            print('El número de componentes conectados es (número de clústeres presentes): ' + str(tupla[0]))
+            print('----------------------------------------------------------------------------------------------')
+            if tupla[1] == True:
+                print('Los dos aeropuertos dados SI están en el mismo cluster')
+            else:
+                print('Los dos aeropuertos dados NO están en el mismo cluster')
 
     elif int(inputs[0]) == 4:
+        #Req 3
+        c_origen = input('Ingrese la ciudad de origen: ')
+        c_destino = input('Ingrese la ciudad de destino: ')
+
         pass
 
     elif int(inputs[0]) == 5:

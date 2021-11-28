@@ -81,6 +81,18 @@ def loadData(analyzer, airports_file, country_file, routes_file):
 def getRoutesbyAirpoirt(analyzer):
     return model.getRoutesbyAirport(analyzer)
 #---------------------------------------------
+
+#_______________________________________________
+#Req 2
+def getConnectionsByIATA(analyzer, IATA1, IATA2):
+    return model.getConnectionsByIATA(analyzer, IATA1, IATA2)
+#---------------------------------------------
+
+#_______________________________________________
+#Req 3
+
+#---------------------------------------------
+
 #Carga de datos 
 def totalStops(analyzer, grafo):
     return model.totalStops(analyzer, grafo)
