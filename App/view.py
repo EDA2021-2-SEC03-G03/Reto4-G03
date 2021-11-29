@@ -136,7 +136,19 @@ while True:
         c_origen = input('Ingrese la ciudad de origen: ')
         c_destino = input('Ingrese la ciudad de destino: ')
 
-        pass
+        l_co = controller.getCities(analyzer, c_origen)
+        l_cd = controller.getCities(analyzer, c_destino)
+        
+        if lt.size(l_co) > 1:
+            print('OH NO! Hay más de 2 ciudades con ese mismo nombre ')
+            for c in lt.iterator(l_co):
+                print(c)
+            input('Escoja la ciudad que busca e ingrese su id: ')
+        if lt.size(l_cd) > 1:
+            print('OH NO! Hay más de 2 ciudades con ese mismo nombre ')
+            for c in lt.iterator(l_cd):
+                print(c)
+            input('Escoja la ciudad que busca e ingrese su id: ')
 
     elif int(inputs[0]) == 5:
         pass

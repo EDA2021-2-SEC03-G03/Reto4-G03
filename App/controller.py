@@ -65,8 +65,8 @@ def loadData(analyzer, airports_file, country_file, routes_file):
     
     model.addRouteND(analyzer)
     for city in DictCountry:
-        model.addCity(analyzer, city)
-        model.addCities(analyzer, city)
+        model.addCity(analyzer, city['id'], city)
+        model.addCities(analyzer, city['city'], city)
     
     
     #print(analyzer['map_airports']['elements'][0:10])
@@ -90,6 +90,9 @@ def getConnectionsByIATA(analyzer, IATA1, IATA2):
 
 #_______________________________________________
 #Req 3
+
+def getCities(analyzer, ciudad):
+    return model.getCities(analyzer, ciudad)
 
 #---------------------------------------------
 

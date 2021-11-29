@@ -54,9 +54,14 @@ def newAnalyzer():
                     'paths': None
                     }
 
-        analyzer['cities'] = om.newMap(omaptype = 'RBT',
-                                      comparefunction = compare)
-        analyzer['cities2'] = lt.newList('ARRAY_LIST', cmpfunction=compareID)
+        analyzer['cities'] = mp.newMap(100,
+                                 maptype='PROBING',
+                                 loadfactor=0.5,
+                                 comparefunction=compareCatalog)
+        analyzer['cities2'] = mp.newMap(100,
+                                 maptype='PROBING',
+                                 loadfactor=0.5,
+                                 comparefunction=compareCatalog)
 
         analyzer['connections_d'] = gr.newGraph(datastructure='ADJ_LIST',
                                             directed=True,
@@ -76,7 +81,19 @@ def newAnalyzer():
         error.reraise(exp, 'model:newAnalyzer')
 
 # Funciones para agregar informacion al catalogo
-def addCity(analyzer, city):
+def addCity(analyzer, cityID, city):
+    cities = analyzer['cities']
+    existcity = mp.contains(cities, cityID)
+    if existcity:
+        entry = mp.get(cities, cityID)
+        c = me.getValue(entry)
+    else:
+        c = newCity()
+        mp.put(cities, cityID, c)
+    lt.addLast(c['City'], city)
+
+    """
+    def addCity(analyzer, city):
     entry = om.get(analyzer['cities'], city['id'])
     if entry is None:
         newEntry = newdata()
@@ -85,10 +102,18 @@ def addCity(analyzer, city):
         newEntry = me.getValue(entry)
     lt.addLast(newEntry, city)
     return analyzer
+    """
 
-def addCities(analyzer, city):
-    lt.addLast(analyzer['cities2'], city)
-    return analyzer
+def addCities(analyzer, cityName, city):
+    cities = analyzer['cities2']
+    existcity = mp.contains(cities, cityName)
+    if existcity:
+        entry = mp.get(cities, cityName)
+        c = me.getValue(entry)
+    else:
+        c = newCity()
+        mp.put(cities, cityName, c)
+    lt.addLast(c['City'], city)
 
 def addAirportLt(analyzer, airport):
     lt.addLast(analyzer['airports'], airport)
@@ -143,6 +168,11 @@ def newdata():
     entry = lt.newList('SINGLE_LINKED', compareID)
     return entry
 
+def newCity():
+    city = {"City": None}
+    city['City'] = lt.newList('ARRAY_LIST', compareCatalog)
+    return city
+
 # Funciones de consulta
 
 #Carga de Datos:
@@ -161,7 +191,7 @@ def totalConnections(analyzer, grafo):
     return gr.numEdges(analyzer[grafo])
 
 def totalCities(analyzer): 
-    return om.size(analyzer['cities'])
+    return mp.size(analyzer['cities'])
 
 def totalCities2(analyzer): 
     return lt.size(analyzer['cities2'])
@@ -188,36 +218,21 @@ def getRoutesbyAirport(analyzer):
 #Req 2
 def getConnectionsByIATA(analyzer, IATA1, IATA2):
     grafo_d = analyzer['connections_d']
-    #print(grafo_d)
     analyzer['components'] = scc.KosarajuSCC(grafo_d)
-    #print(analyzer['components'])
     res1 = scc.connectedComponents(analyzer['components']) #Verificar si dos aeropuertos están en el mismo clúster
     res2 = scc.stronglyConnected(analyzer['components'], IATA1, IATA2) #Número total de cúlsteres presentes en el grafo dirigido
     return res1, res2 
 
-    """
-    grafo_d = analyzer['connections_d']
-    #print(grafo_d)
-    analyzer['components'] = scc.KosarajuSCC(grafo_d)
-    res1 = scc.connectedComponents(analyzer['components']) #Verificar si dos aeropuertos están en el mismo clúster
-    res2 = scc.stronglyConnected(analyzer['components'], IATA1, IATA2) #Número total de cúlsteres presentes en el grafo dirigido
-
-    return res1, res2
-    
-    if gr.containsVertex(analyzer['connections'], landing1) and gr.containsVertex(analyzer['connections'], landing2) == True:
-            tupla = controller.requerimiento1(analyzer, landing1, landing2)
-            respuesta = tupla[0]
-            print('El número de componentes conectados es: ' + str(respuesta[0]))
-            if respuesta[1] == True:
-                print('Los dos landing points dados están en el mismo cluster')
-            else:
-                print('Los dos landing points dados no están en el mismo cluster')
-    """ 
-
-
-
 #___________________________________________________
 #Req 3
+
+def getCities(analyzer, ciudad):
+    city_value = mp.get(analyzer['cities2'], ciudad)
+    list_cities= me.getValue(city_value)
+
+    return list_cities['City']
+ 
+    
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compareStopIds(stop, keyvaluestop):
@@ -248,6 +263,16 @@ def compareID(a1, a2):
         return 0
     else:
         return 1
+
+def compareCatalog(category, entry):
+    categoryentry = me.getKey(entry)
+    if (category == categoryentry):
+        return 0
+    elif (category > categoryentry):
+        return 1
+    else:
+        return -1 
+
 def compareReq1(a1,a2):
     return a1['num_connections'] > a2['num_connections']
 
