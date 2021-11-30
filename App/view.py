@@ -143,7 +143,7 @@ while True:
             print('OH NO! Hay más de 2 ciudades con ese mismo nombre ')
             for c in lt.iterator(l_co):
                 print(c)
-            c_o= input('Escoja la ciudad dr origen que busca e ingrese su id: ')
+            c_o= input('Escoja la ciudad de origen que busca e ingrese su id: ')
         if lt.size(l_cd) > 1:
             print('OH NO! Hay más de 2 ciudades con ese mismo nombre ')
             for c in lt.iterator(l_cd):
