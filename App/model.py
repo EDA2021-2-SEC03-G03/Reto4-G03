@@ -232,7 +232,11 @@ def getCities(analyzer, ciudad):
 
     return list_cities['City']
  
-    
+def CiudadesID(analyzer, ciudad):
+     lt_ciudades = getCities(analyzer, ciudad)
+     for c in lt.iterator(lt_ciudades):
+        codigo = c['id']
+        return codigo 
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compareStopIds(stop, keyvaluestop):

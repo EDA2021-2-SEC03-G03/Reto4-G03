@@ -94,6 +94,9 @@ def getConnectionsByIATA(analyzer, IATA1, IATA2):
 def getCities(analyzer, ciudad):
     return model.getCities(analyzer, ciudad)
 
+def CiudadesID(analyzer, ciudad):
+    return model.CiudadesID(analyzer, ciudad)
+
 #---------------------------------------------
 
 #Carga de datos 

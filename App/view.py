@@ -143,12 +143,21 @@ while True:
             print('OH NO! Hay más de 2 ciudades con ese mismo nombre ')
             for c in lt.iterator(l_co):
                 print(c)
-            input('Escoja la ciudad que busca e ingrese su id: ')
+            c_o= input('Escoja la ciudad dr origen que busca e ingrese su id: ')
         if lt.size(l_cd) > 1:
             print('OH NO! Hay más de 2 ciudades con ese mismo nombre ')
             for c in lt.iterator(l_cd):
                 print(c)
-            input('Escoja la ciudad que busca e ingrese su id: ')
+            c_d = input('Escoja la ciudad de destino que busca e ingrese su id: ')
+        
+        if lt.size(l_co) == 1:
+            c_o = controller.CiudadesID(analyzer, c_origen)
+            
+        if lt.size(l_cd) == 1:
+            c_d = controller.CiudadesID(analyzer, c_destino)
+
+        print('La ciudad de origen ' + str(c_origen) + ' con id ' + str(c_o))
+        print('La ciudad de destino ' + str(c_destino) + ' con id ' + str(c_d))
 
     elif int(inputs[0]) == 5:
         pass
