@@ -57,9 +57,9 @@ catalog = None
 # ___________________________________________________
 
 
-airpots_file = 'airports_full.csv'
+airpots_file = 'airports-small.csv'
 country_file = 'worldcities.csv'
-routes_file = 'routes_full.csv'
+routes_file = 'routes-small.csv'
 initialStation = None
 analyzer = None
 """
@@ -160,6 +160,10 @@ while True:
         print('La ciudad de destino ' + str(c_destino) + ' con id ' + str(c_d))
 
     elif int(inputs[0]) == 5:
+        #Req 4
+        c_origen = input('Ingrese la ciudad de origen: ')
+        millas = input('Ingrese la cantidad de millas disponibles del viajero: ')
+
         pass
 
     elif int(inputs[0]) == 6:

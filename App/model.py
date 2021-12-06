@@ -237,6 +237,17 @@ def CiudadesID(analyzer, ciudad):
      for c in lt.iterator(lt_ciudades):
         codigo = c['id']
         return codigo 
+        
+#___________________________________________________
+#Req 4
+
+
+
+#___________________________________________________
+#Req 5
+
+
+
 
 # Funciones utilizadas para comparar elementos dentro de una lista
 def compareStopIds(stop, keyvaluestop):
