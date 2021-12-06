@@ -243,6 +243,49 @@ def CiudadesID(analyzer, ciudad):
 
 
 
+"""
+def minimumCostPaths(analyzer, initialStation, destStation):
+    
+    Calcula los caminos de costo mínimo desde la estacion initialStation
+    a todos los demas vertices del grafo
+    
+    analyzer['paths'] = djk.Dijkstra(analyzer['connections'], initialStation)
+    path = djk.pathTo(analyzer['paths'], destStation)
+    return path
+
+
+def MST(analyzer):
+    mst = prim.PrimMST(analyzer['connections'])
+
+    peso = prim.weightMST(analyzer['connections'], mst)
+    mst = (prim.edgesMST(analyzer['connections'], mst))['mst']
+
+    for i in lt.iterator(mst):
+        addPointConneMst(analyzer, i['vertexA'], i['vertexB'], i['weight'])
+    
+
+    mstAnalyzer = analyzer['mst']
+    vert = gr.vertices(mstAnalyzer)
+    num = lt.size(vert)
+    primero = lt.firstElement(vert)
+    mayor = 0
+    camino = None
+    dijta = djk.Dijkstra(analyzer['mst'], primero)
+    listaFuncional = lt.newList('ARRAY_LIST')
+
+    for v in lt.iterator(vert):
+        if djk.hasPathTo(dijta, v) == True:
+            ruta = djk.pathTo(dijta, v)
+            x = lt.size(ruta)
+            if x > mayor:
+                mayor = x
+                camino = ruta
+
+    return num, peso, camino
+
+
+"""
+
 #___________________________________________________
 #Req 5
 
