@@ -57,9 +57,9 @@ catalog = None
 # ___________________________________________________
 
 
-airpots_file = 'airports-small.csv'
-country_file = 'worldcities.csv'
-routes_file = 'routes-small.csv'
+airpots_file = 'airports-utf8-small.csv'
+country_file = 'worldcities-utf8.csv'
+routes_file = 'routes-utf8-small.csv'
 initialStation = None
 analyzer = None
 """
@@ -74,6 +74,7 @@ while True:
         controller.loadData(analyzer, airpots_file, country_file, routes_file)
         #print(analyzer["connections_d"])
         #print(analyzer['cities'])
+        #print(analyzer['codeAirport'])
         vertices_d = controller.totalStops(analyzer, 'connections_d')
         arcos_d = controller.totalConnections(analyzer, 'connections_d')
 
@@ -158,6 +159,25 @@ while True:
 
         print('La ciudad de origen ' + str(c_origen) + ' con id ' + str(c_o))
         print('La ciudad de destino ' + str(c_destino) + ' con id ' + str(c_d))
+        print('----------------------------------------------------------------------------')
+
+        print('El aeropuerto de origen es: ')
+        a_origen = controller.AeropuertoID(analyzer, c_o)
+        print(a_origen)
+        a_destino = controller.AeropuertoID(analyzer, c_d)
+        print('El aeropuerto de destino es: ')
+        print(a_destino)
+
+        distanciaA = round(controller.DistanceA(a_origen, a_destino),2)
+        print('----------------------------------------------------------------------------')
+        print('La distancia total: ' + str(distanciaA))
+        print('Ruta del viaje')
+        a1_IATA = controller.aName(a_origen)
+        a2_IATA = controller.aName(a_destino)
+        camino = controller.camino(analyzer, a1_IATA, a2_IATA)
+        print(camino)
+
+
 
     elif int(inputs[0]) == 5:
         #Req 4

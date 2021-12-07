@@ -67,6 +67,7 @@ def loadData(analyzer, airports_file, country_file, routes_file):
     for city in DictCountry:
         model.addCity(analyzer, city['id'], city)
         model.addCities(analyzer, city['city'], city)
+        model.addCodeAirport(analyzer, city['id'], city)
     
     
     #print(analyzer['map_airports']['elements'][0:10])
@@ -96,6 +97,18 @@ def getCities(analyzer, ciudad):
 
 def CiudadesID(analyzer, ciudad):
     return model.CiudadesID(analyzer, ciudad)
+
+def AeropuertoID(analyzer, id):
+    return model.AeropuertoID(analyzer, id)
+
+def aName(aeropuerto):
+    return model.aName(aeropuerto)
+
+def DistanceA(a1, a2):
+    return model.DistanceA(a1, a2)
+
+def camino(analyzer, a1, a2):
+    return model.camino(analyzer, a1, a2)
 
 #---------------------------------------------
 

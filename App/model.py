@@ -33,7 +33,9 @@ from DISClib.Algorithms.Graphs import scc
 from DISClib.Algorithms.Sorting import mergesort as ms
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import list as lt
+from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Utils import error as error
+from math import sin,cos,sqrt,asin,pi
 assert config
 
 """
@@ -49,9 +51,11 @@ def newAnalyzer():
                     'connections_nd': None,
                     'cities': None,
                     'cities2': None,
+                    'codeAirport':None,
                     'components': None,
                     'airports': None,
-                    'paths': None
+                    'paths': None,
+                    'camino':None
                     }
 
         analyzer['cities'] = mp.newMap(100,
@@ -59,6 +63,10 @@ def newAnalyzer():
                                  loadfactor=0.5,
                                  comparefunction=compareCatalog)
         analyzer['cities2'] = mp.newMap(100,
+                                 maptype='PROBING',
+                                 loadfactor=0.5,
+                                 comparefunction=compareCatalog)
+        analyzer['codeAirport'] = mp.newMap(100,
                                  maptype='PROBING',
                                  loadfactor=0.5,
                                  comparefunction=compareCatalog)
@@ -93,8 +101,7 @@ def addCity(analyzer, cityID, city):
     lt.addLast(c['City'], city)
 
     """
-    def addCity(analyzer, city):
-    entry = om.get(analyzer['cities'], city['id'])
+    entry = om.get(analyzer['codeAirport'], city['id'])
     if entry is None:
         newEntry = newdata()
         om.put(analyzer['cities'], city['id'], newEntry)
@@ -118,6 +125,23 @@ def addCities(analyzer, cityName, city):
 def addAirportLt(analyzer, airport):
     lt.addLast(analyzer['airports'], airport)
     return analyzer
+
+def addCodeAirport(analyzer, codigo, ciudad):
+    """
+    Mapa de codigo-ciudad con su aeropuerto más cercano
+    """
+
+    cities = analyzer['codeAirport']
+    existcity = mp.contains(cities, codigo)
+    if existcity:
+        entry = mp.get(cities, codigo)
+        c = me.getValue(entry)
+    else:
+        c = newAirport(analyzer, ciudad)
+        mp.put(cities, codigo, c)
+
+    #lt.addLast(c['Airport'], ciudad)
+     
 
 def addAirport(analyzer, airport):
     """
@@ -173,8 +197,40 @@ def newCity():
     city['City'] = lt.newList('ARRAY_LIST', compareCatalog)
     return city
 
+
+def newAirport(analyzer, ciudad):
+    city = {'Airport': None}
+    city['Airport'] = lt.newList('ARRAY_LIST', compareCatalog)
+    menor = 1000000000
+    menorA = None
+    for a in lt.iterator(analyzer['airports']):
+        d = distancia(a, ciudad)
+        if menor > d:
+            menor = d
+            menorA = a
+            
+    lt.addLast(city['Airport'], menorA)
+    
+    return city 
+
+def distancia(a, ciudad):
+    lat1 = float(ciudad['lat'])
+    long1 = float(ciudad['lng'])
+    lat2 = float(a['Latitude'])
+    long2 = float(a['Longitude'])
+    r = 6371000 #radio terrestre medio, en metros
+
+    c = pi/180 #constante para transformar grados en radianes
+    
+    #Fórmula de haversine
+    d = 2*r*asin(sqrt(sin(c*(lat2-lat1)/2)**2 + cos(c*lat1)*cos(c*lat2)*sin(c*(long2-long1)/2)**2))
+    return d     
+
+
+
 # Funciones de consulta
 
+#___________________________________________________
 #Carga de Datos:
 
 def totalStops(analyzer, grafo):
@@ -237,7 +293,37 @@ def CiudadesID(analyzer, ciudad):
      for c in lt.iterator(lt_ciudades):
         codigo = c['id']
         return codigo 
-        
+
+def AeropuertoID(analyzer, id):
+    ciudad_aeropuerto = mp.get(analyzer['codeAirport'], id)
+    lt_aeropuerto = me.getValue(ciudad_aeropuerto)
+    
+    return lt_aeropuerto['Airport']
+
+def aName(aeropuerto):
+    for a in lt.iterator(aeropuerto):
+        a_name = a['IATA']
+        return a_name
+
+def DistanceA(a1, a2):
+    for a1 in lt.iterator(a1):
+        for a2 in lt.iterator(a2):
+            lat1 = float(a1['Latitude'])
+            long1 = float(a1['Longitude'])
+            lat2 = float(a2['Latitude'])
+            long2 = float(a2['Longitude'])
+            r = 6371000 #radio terrestre medio, en metros
+
+            c = pi/180 #constante para transformar grados en radianes
+            
+            #Fórmula de haversine
+            d = 2*r*asin(sqrt(sin(c*(lat2-lat1)/2)**2 + cos(c*lat1)*cos(c*lat2)*sin(c*(long2-long1)/2)**2))
+            return d 
+
+def camino(analyzer, a1, a2):
+    analyzer['camino'] = djk.Dijkstra(analyzer['connections_d'], a1)
+    path = djk.pathTo(analyzer['camino'], a2)
+    return path
 #___________________________________________________
 #Req 4
 
