@@ -106,6 +106,12 @@ def aName(aeropuerto):
 
 def DistanceA(a1, a2):
     return model.DistanceA(a1, a2)
+#________________________________________________
+#Req 4
+def Lifemiles(analyzer,c_origen, millas):
+    return model.Lifemiles(analyzer,c_origen, millas)
+
+#------------------------------------------------
 
 def camino(analyzer, a1, a2):
     return model.camino(analyzer, a1, a2)
