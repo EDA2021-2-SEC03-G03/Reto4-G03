@@ -34,6 +34,8 @@ from DISClib.Algorithms.Sorting import mergesort as ms
 from DISClib.DataStructures import mapentry as me
 from DISClib.ADT import list as lt
 from DISClib.Algorithms.Graphs import dijsktra as djk
+from DISClib.Algorithms.Graphs import prim
+from DISClib.Algorithms.Graphs import dfs
 from DISClib.Utils import error as error
 from math import sin,cos,sqrt,asin,pi
 assert config
@@ -54,8 +56,11 @@ def newAnalyzer():
                     'codeAirport':None,
                     'components': None,
                     'airports': None,
+                    'airportsMap': None,
+                    'airportsAD': None,
                     'paths': None,
-                    'camino':None
+                    'camino':None,
+                    'mst': None
                     }
 
         analyzer['cities'] = mp.newMap(100,
@@ -67,6 +72,10 @@ def newAnalyzer():
                                  loadfactor=0.5,
                                  comparefunction=compareCatalog)
         analyzer['codeAirport'] = mp.newMap(100,
+                                 maptype='PROBING',
+                                 loadfactor=0.5,
+                                 comparefunction=compareCatalog)
+        analyzer['airportsMap'] = mp.newMap(100,
                                  maptype='PROBING',
                                  loadfactor=0.5,
                                  comparefunction=compareCatalog)
@@ -83,6 +92,11 @@ def newAnalyzer():
                                       comparefunction = compare)
         analyzer['airports'] = lt.newList('ARRAY_LIST')
         analyzer['paths'] = lt.newList('ARRAY_LIST')
+        analyzer['airportsAD'] = lt.newList('ARRAY_LIST')
+        analyzer['mst'] = gr.newGraph(datastructure='ADJ_LIST',
+                                            directed=True,
+                                            size=5000,
+                                            comparefunction=compareStopIds)
 
         return analyzer
     except Exception as exp:
@@ -100,16 +114,6 @@ def addCity(analyzer, cityID, city):
         mp.put(cities, cityID, c)
     lt.addLast(c['City'], city)
 
-    """
-    entry = om.get(analyzer['codeAirport'], city['id'])
-    if entry is None:
-        newEntry = newdata()
-        om.put(analyzer['cities'], city['id'], newEntry)
-    else:
-        newEntry = me.getValue(entry)
-    lt.addLast(newEntry, city)
-    return analyzer
-    """
 
 def addCities(analyzer, cityName, city):
     cities = analyzer['cities2']
@@ -125,6 +129,17 @@ def addCities(analyzer, cityName, city):
 def addAirportLt(analyzer, airport):
     lt.addLast(analyzer['airports'], airport)
     return analyzer
+
+def addAirportMap(analyzer, IATA, airport):
+    airports = analyzer['airportsMap']
+    existcity = mp.contains(airports, IATA)
+    if existcity:
+        entry = mp.get(airports, IATA)
+        a = me.getValue(entry)
+    else:
+        a = newMap()
+        mp.put(airports, IATA, a)
+    lt.addLast(a['Airport'], airport)
 
 def addCodeAirport(analyzer, codigo, ciudad):
     """
@@ -196,6 +211,11 @@ def newCity():
     city = {"City": None}
     city['City'] = lt.newList('ARRAY_LIST', compareCatalog)
     return city
+
+def newMap():
+    airport = {"Airport": None}
+    airport['Airport'] = lt.newList('ARRAY_LIST', compareCatalog)
+    return airport
 
 
 def newAirport(analyzer, ciudad):
@@ -300,6 +320,12 @@ def AeropuertoID(analyzer, id):
     
     return lt_aeropuerto['Airport']
 
+def AeropuertoIATA(analyzer, iata):
+    ciudad_aeropuerto = mp.get(analyzer['airportsMap'], iata)
+    lt_aeropuerto = me.getValue(ciudad_aeropuerto)
+    
+    return lt_aeropuerto['Airport']
+
 def aName(aeropuerto):
     for a in lt.iterator(aeropuerto):
         a_name = a['IATA']
@@ -322,35 +348,26 @@ def DistanceA(a1, a2):
 
 def camino(analyzer, a1, a2):
     analyzer['camino'] = djk.Dijkstra(analyzer['connections_d'], a1)
-    
+
     if djk.hasPathTo(analyzer['camino'], a2):
         path = djk.pathTo(analyzer['camino'], a2)
         total = djk.distTo(analyzer['camino'], a2)
 
         return path, total
+
+def AeropuertoIATA(analyzer, iata):
+    ciudad_aeropuerto = mp.get(analyzer['airportsMap'], iata)
+    lt_aeropuerto = me.getValue(ciudad_aeropuerto)
+    
+    return lt_aeropuerto['Airport']
 #___________________________________________________
 #Req 4
 def Lifemiles(analyzer,c_origen, millas):
-    papa = djk.Dijkstra(analyzer['connections_nd'], c_origen)
-    print(papa)
 
+    mst = prim.PrimMST(analyzer['connections_d'])
 
-"""
-def minimumCostPaths(analyzer, initialStation, destStation):
-    
-    Calcula los caminos de costo mínimo desde la estacion initialStation
-    a todos los demas vertices del grafo
-    
-    analyzer['paths'] = djk.Dijkstra(analyzer['connections'], initialStation)
-    path = djk.pathTo(analyzer['paths'], destStation)
-    return path
-
-
-def MST(analyzer):
-    mst = prim.PrimMST(analyzer['connections'])
-
-    peso = prim.weightMST(analyzer['connections'], mst)
-    mst = (prim.edgesMST(analyzer['connections'], mst))['mst']
+    peso = prim.weightMST(analyzer['connections_d'], mst)
+    mst = (prim.edgesMST(analyzer['connections_d'], mst))['mst']
 
     for i in lt.iterator(mst):
         addPointConneMst(analyzer, i['vertexA'], i['vertexB'], i['weight'])
@@ -359,7 +376,7 @@ def MST(analyzer):
     mstAnalyzer = analyzer['mst']
     vert = gr.vertices(mstAnalyzer)
     num = lt.size(vert)
-    primero = lt.firstElement(vert)
+    primero = c_origen
     mayor = 0
     camino = None
     dijta = djk.Dijkstra(analyzer['mst'], primero)
@@ -373,14 +390,127 @@ def MST(analyzer):
                 mayor = x
                 camino = ruta
 
-    return num, peso, camino
+    num_m = int(mayor) - int(millas)
 
+    return num, peso, camino, num_m
+
+def addVerMst(catalog, pointid):
+    try:
+        if not gr.containsVertex(catalog['mst'], pointid):
+            gr.insertVertex(catalog['mst'], pointid)
+        return catalog
+    except Exception as exp:
+        error.reraise(exp, 'model:addVerMst')
+
+def addConneMst(catalog, origen, destino, distancia):
+    edge = gr.getEdge(catalog['mst'], origen, destino)
+    if edge is None:
+        gr.addEdge(catalog['mst'], origen, destino, distancia)
+    return catalog
+
+def addPointConneMst(catalog, ver1, ver2, distancia):
+    try:
+        origen = ver1
+        destino = ver2
+        addVerMst(catalog, origen)
+        addVerMst(catalog, destino)
+        addConneMst(catalog, origen, destino, distancia)
+        addConneMst(catalog, destino, origen, distancia)
+        return catalog
+    except Exception as exp:
+        error.reraise(exp, 'model:addPointConneMst') 
+
+
+
+
+"""
+def MST(analyzer):
+    mst = prim.PrimMST(analyzer['connections_d'])
+
+    peso = prim.weightMST(analyzer['connections_d'], mst)
+    mst = (prim.edgesMST(analyzer['connections_d'], mst))['mst']
+
+    for i in lt.iterator(mst):
+        addPointConneMst(analyzer, i['vertexA'], i['vertexB'], i['weight'])
+    
+
+    mstAnalyzer = analyzer['mst']
+    vert = gr.vertices(mstAnalyzer)
+    num = lt.size(vert)
+    primero = c_origen
+    mayor = millas
+    camino = None
+    dijta = djk.Dijkstra(analyzer['mst'], primero)
+    listaFuncional = lt.newList('ARRAY_LIST')
+
+    for v in lt.iterator(vert):
+        if djk.hasPathTo(dijta, v) == True:
+            ruta = djk.pathTo(dijta, v)
+            x = lt.size(ruta)
+            if x > mayor:
+                mayor = x
+                camino = ruta
+
+    num_m = int(mayor) - int(millas)
+
+    return num, peso, camino, num_m
+
+def addVerMst(catalog, pointid):
+    try:
+        if not gr.containsVertex(catalog['mst'], pointid):
+            gr.insertVertex(catalog['mst'], pointid)
+        return catalog
+    except Exception as exp:
+        error.reraise(exp, 'model:addVerMst')
+
+def addConneMst(catalog, origen, destino, distancia):
+    edge = gr.getEdge(catalog['mst'], origen, destino)
+    if edge is None:
+        gr.addEdge(catalog['mst'], origen, destino, distancia)
+    return catalog
+
+def addPointConneMst(catalog, ver1, ver2, distancia):
+    try:
+        origen = ver1
+        destino = ver2
+        addVerMst(catalog, origen)
+        addVerMst(catalog, destino)
+        addConneMst(catalog, origen, destino, distancia)
+        addConneMst(catalog, destino, origen, distancia)
+        return catalog
+    except Exception as exp:
+        error.reraise(exp, 'model:addPointConneMst')
+
+
+    --------------------------------------------------------------------------------
+
+    mst = prim.PrimMST(analyzer['connections_d'])
+
+    peso = prim.weightMST(analyzer['connections_d'], mst)
+    mst = (prim.edgesMST(analyzer['connections_d'], mst))['mst'] 
+
+    defs = dfs.DepthFirstSearch(analyzer['connections_d'], c_origen)
+
+    for n in peso:
+       if djk.hasPathTo(defs, n):
+        path = djk.pathTo(defs, n)
+        total = djk.distTo(defs, n)
+
+        return path, total
 
 """
 
 #___________________________________________________
 #Req 5
 
+def removeA(analyzer, cIATA):
+    lt_adjacents = gr.adjacents(analyzer['connections_nd'], cIATA)
+    size = lt.size(lt_adjacents)
+    return lt_adjacents, size 
+
+def aeropuertosAd(analyzer, ar):
+    lt.addLast(analyzer['airportsAD'], ar)
+    return analyzer
 
 
 

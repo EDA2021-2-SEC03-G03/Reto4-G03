@@ -60,6 +60,7 @@ def loadData(analyzer, airports_file, country_file, routes_file):
     for airport in DictAirports:
         model.addAirport(analyzer, airport)
         model.addAirportLt(analyzer, airport)
+        model.addAirportMap(analyzer, airport['IATA'], airport)
     for route in DictRoutes:
         model.addRoute(analyzer, route)
     
@@ -110,6 +111,17 @@ def DistanceA(a1, a2):
 #Req 4
 def Lifemiles(analyzer,c_origen, millas):
     return model.Lifemiles(analyzer,c_origen, millas)
+
+#________________________________________________
+#Req 5
+def removeA(analyzer, cIATA):
+    return model.removeA(analyzer, cIATA)
+
+def AeropuertoIATA(analyzer, iata):
+    return model.AeropuertoIATA(analyzer, iata)
+
+def aeropuertosAd(analyzer, ar):
+    return model.aeropuertosAd(analyzer, ar)
 
 #------------------------------------------------
 

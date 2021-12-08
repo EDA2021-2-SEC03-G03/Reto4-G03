@@ -97,7 +97,7 @@ def scan(graph, search, vertex):
         for edge in lt.iterator(edges):
             w = e.other(edge, vertex)
             if (not map.get(search['marked'], w)['value']):
-                if (e.weight(edge) < map.get(search['distTo'], w)['value']):
+                if (float(e.weight(edge)) < map.get(search['distTo'], w)['value']):
                     map.put(search['distTo'], w, e.weight(edge))
                     map.put(search['edgeTo'], w, edge)
                     if (pq.contains(search['pq'], w)):

@@ -72,9 +72,7 @@ while True:
         analyzer = controller.init()
         print("Cargando información de los aeropuertos ....")
         controller.loadData(analyzer, airpots_file, country_file, routes_file)
-        #print(analyzer["connections_d"])
-        #print(analyzer['cities'])
-        #print(analyzer['codeAirport'])
+        
         vertices_d = controller.totalStops(analyzer, 'connections_d')
         arcos_d = controller.totalConnections(analyzer, 'connections_d')
 
@@ -180,13 +178,69 @@ while True:
 
 
     elif int(inputs[0]) == 5:
-        #Req 4a
+        #Req 4
         c_origen = input('Ingrese la ciudad de origen: ')
         millas = input('Ingrese la cantidad de millas disponibles del viajero: ')
-        Data = controller.Lifemiles(analyzer,c_origen, millas)
+
+        l_co = controller.getCities(analyzer, c_origen)
+        
+        if lt.size(l_co) > 1:
+            print('OH NO! Hay más de 2 ciudades con ese mismo nombre ')
+            for c in lt.iterator(l_co):
+                print(c)
+            c_o= input('Escoja la ciudad de origen que busca e ingrese su id: ')
+        
+        if lt.size(l_co) == 1:
+            c_o = controller.CiudadesID(analyzer, c_origen)
+
+        print('La ciudad de origen ' + str(c_origen) + ' con id ' + str(c_o))
+        print('----------------------------------------------------------------------------')
+
+        print('El aeropuerto de origen es: ')
+        a_origen = controller.AeropuertoID(analyzer, c_o)
+        print(a_origen['elements'][0])
+        a_IATA = controller.aName(a_origen)
+
+        Data = controller.Lifemiles(analyzer,a_IATA, millas)
+
+
+
+
 
     elif int(inputs[0]) == 6:
-        pass
+        #Req 5
+        c_IATA = input('Ingrese el código IATA del aeropuerto fuera de funcionamiento: ')
+        res = controller.removeA(analyzer, c_IATA)
+        print('------------------------------------------------------------------------------------')
+        print('Número total de aeropuertos afectados: ' + str(res[1]))
+        lista = res[0]
+        for a in lt.iterator(lista):
+            codigo = a
+            ar = controller.AeropuertoIATA(analyzer, codigo)
+            lt_ar = controller.aeropuertosAd(analyzer, ar['elements'][0])
+        
+        lt_aAD = analyzer['airportsAD']
+
+        if lt.size(lt_aAD) >= 6: 
+            print('Los 3 primeros aeropuertos: ')
+            print(lt_aAD['elements'][0:3])
+
+        elif lt.size(lt_aAD) <= 5: 
+            print('Los 2 primeros aeropuertos: ')
+            print(lt_aAD['elements'][0:2])
+
+        print('Los últimos aeropuertos: ')
+        if lt.size(lt_aAD) >= 6: 
+            print('Los 3 últimos aeropuertos: ')
+            print(lt_aAD['elements'][-3:])
+
+        elif lt.size(lt_aAD) <= 5: 
+            print('Los 2 últimos aeropuertos: ')
+            print(lt_aAD['elements'][-2:])
+        
+        
+            
+        
 
 
     else:
