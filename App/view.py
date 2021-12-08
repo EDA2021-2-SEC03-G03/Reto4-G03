@@ -167,15 +167,15 @@ while True:
         a_destino = controller.AeropuertoID(analyzer, c_d)
         print('El aeropuerto de destino es: ')
         print(a_destino)
-
-        distanciaA = round(controller.DistanceA(a_origen, a_destino),2)
-        print('----------------------------------------------------------------------------')
-        print('La distancia total: ' + str(distanciaA))
-        print('Ruta del viaje')
         a1_IATA = controller.aName(a_origen)
         a2_IATA = controller.aName(a_destino)
         camino = controller.camino(analyzer, a1_IATA, a2_IATA)
-        print(camino)
+        print('----------------------------------------------------------------------------')
+        print('La distancia total: ' + str(camino[1]))
+        print('Ruta del viaje')
+        
+        print(camino[0])
+        
 
 
 

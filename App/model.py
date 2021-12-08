@@ -322,8 +322,12 @@ def DistanceA(a1, a2):
 
 def camino(analyzer, a1, a2):
     analyzer['camino'] = djk.Dijkstra(analyzer['connections_d'], a1)
-    path = djk.pathTo(analyzer['camino'], a2)
-    return path
+    
+    if djk.hasPathTo(analyzer['camino'], a2):
+        path = djk.pathTo(analyzer['camino'], a2)
+        total = djk.distTo(analyzer['camino'], a2)
+
+        return path, total
 #___________________________________________________
 #Req 4
 
