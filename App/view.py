@@ -180,11 +180,10 @@ while True:
 
 
     elif int(inputs[0]) == 5:
-        #Req 4
+        #Req 4a
         c_origen = input('Ingrese la ciudad de origen: ')
         millas = input('Ingrese la cantidad de millas disponibles del viajero: ')
-
-        pass
+        Data = controller.Lifemiles(analyzer,c_origen, millas)
 
     elif int(inputs[0]) == 6:
         pass

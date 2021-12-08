@@ -330,7 +330,9 @@ def camino(analyzer, a1, a2):
         return path, total
 #___________________________________________________
 #Req 4
-
+def Lifemiles(analyzer,c_origen, millas):
+    papa = djk.Dijkstra(analyzer['connections_nd'], c_origen)
+    print(papa)
 
 
 """
