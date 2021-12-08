@@ -277,19 +277,19 @@ def getRoutesbyAirport(analyzer):
     rock = analyzer['connections_d']
     list_airports = lt.newList(datastructure='ARRAY_LIST')
     airports = gr.vertices(rock)
+    interconectados = 0
     for airport in lt.iterator(airports):
         indegree = gr.indegree(rock, airport)
         outdegree = gr.outdegree(rock, airport)
         suma = indegree+outdegree
         info = om.get(analyzer['map_airports'],airport)['value']
         dic = {'IATA': airport, 'num_connections': suma, 'info': info}
-        if suma >= 2:
-            pass
-            #checker = gr.edges(analyzer["connections_nd"])
+        if indegree > 0 and outdegree > 0:
+            interconectados += 1
         lt.addLast(list_airports, dic)
         
     ms.sort(list_airports,compareReq1)
-    return list_airports
+    return list_airports, interconectados
 #___________________________________________________
 #Req 2
 def getConnectionsByIATA(analyzer, IATA1, IATA2):

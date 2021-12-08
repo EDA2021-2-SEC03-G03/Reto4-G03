@@ -108,11 +108,14 @@ while True:
         #Req 1
         topx = int(input("Ingrese el número de aeropuertos quiere ver: "))
         data = controller.getRoutesbyAirpoirt(analyzer)
-        if topx > lt.size(data):
-            topx= lt.size(data)
-        data2 = lt.subList(data,1,topx)
-        print('TOP'+ str(topx) +'AEROPUERTOS Y SU NUMERO DE CONEXIONES: ')
-        i=0
+        if topx > lt.size(data[0]):
+            topx= lt.size(data[0])
+        data2 = lt.subList(data[0],1,topx)
+        print("---------------------------------------------------------------------")
+        print("Aeropuertos interconectados: " + str(data[1]))
+        print()
+        print('TOP '+ str(topx) +' AEROPUERTOS Y SU NUMERO DE CONEXIONES: ')
+        i=1
         for a in lt.iterator(data2):
             print(str(i)+'.\t'+ str(a['info']['Name'])+' ('+ str(a['IATA'])+ '): '+ str(a['num_connections']))
             i +=1
