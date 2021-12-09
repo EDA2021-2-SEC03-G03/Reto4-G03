@@ -380,20 +380,22 @@ def Lifemiles(analyzer,c_origen, millas):
     primero = c_origen
     mayor = 0
     camino = None
-    dijta = djk.Dijkstra(analyzer['mst'], primero)
+    dijta = dfs.DepthFirstSearch(analyzer['mst'], primero)
 
     for v in lt.iterator(vert):
-        if djk.hasPathTo(dijta, v) == True:
-            ruta = djk.pathTo(dijta, v)
+        if dfs.hasPathTo(dijta, v) == True:
+            ruta = dfs.pathTo(dijta, v)
             x = lt.size(ruta)
             if x > mayor:
                 mayor = x
                 camino = ruta
-               
+    print(camino)
     distancia = 0
     for item in lt.iterator(camino):
+        print(item)
         a_sum = item['weight']
         distancia += float(a_sum)
+        
 
 
     residuo = float(distancia) - float(distance_km)
@@ -509,7 +511,7 @@ def addPointConneMst(catalog, ver1, ver2, distancia):
 #Req 5
 
 def removeA(analyzer, cIATA):
-    lt_adjacents = gr.adjacents(analyzer['connections_nd'], cIATA)
+    lt_adjacents = gr.adjacents(analyzer['connections_d'], cIATA)
     size = lt.size(lt_adjacents)
     return lt_adjacents, size 
 
