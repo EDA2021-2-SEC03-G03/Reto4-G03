@@ -36,6 +36,7 @@ from DISClib.ADT import list as lt
 from DISClib.Algorithms.Graphs import dijsktra as djk
 from DISClib.Algorithms.Graphs import prim
 from DISClib.Algorithms.Graphs import dfs
+from DISClib.ADT import queue as q
 from DISClib.Utils import error as error
 from math import sin,cos,sqrt,asin,pi
 assert config
@@ -364,10 +365,10 @@ def AeropuertoIATA(analyzer, iata):
 #Req 4
 def Lifemiles(analyzer,c_origen, millas):
 
-    mst = prim.PrimMST(analyzer['connections_d'])
+    mst = prim.PrimMST(analyzer['connections_nd'])
 
-    peso = prim.weightMST(analyzer['connections_d'], mst)
-    mst = (prim.edgesMST(analyzer['connections_d'], mst))['mst']
+    peso = prim.weightMST(analyzer['connections_nd'], mst)
+    mst = (prim.edgesMST(analyzer['connections_nd'], mst))['mst']
 
     for i in lt.iterator(mst):
         addPointConneMst(analyzer, i['vertexA'], i['vertexB'], i['weight'])
@@ -418,7 +419,7 @@ def addPointConneMst(catalog, ver1, ver2, distancia):
         addConneMst(catalog, destino, origen, distancia)
         return catalog
     except Exception as exp:
-        error.reraise(exp, 'model:addPointConneMst') 
+        error.reraise(exp, 'model:addPointConneMst')
 
 
 

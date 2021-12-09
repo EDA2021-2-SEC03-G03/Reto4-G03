@@ -42,7 +42,7 @@ def printMenu():
     print("*******************************************")
     print("Bienvenido")
     print("1- Cargar información del catálogo")
-    print("2- Encontrar puntos de interaxión aérea (Req. 1)")
+    print("2- Encontrar puntos de interacción aérea (Req. 1)")
     print("3- Encontrar clústeres de tráfico aéreo (Req. 2)")
     print("4- Encontrar la ruta más corta entre ciudades (Req. 3)")
     print("5- Utilizar las millas del viajero (Req. 4)")
@@ -183,7 +183,7 @@ while True:
     elif int(inputs[0]) == 5:
         #Req 4
         c_origen = input('Ingrese la ciudad de origen: ')
-        millas = input('Ingrese la cantidad de millas disponibles del viajero: ')
+        millas = float(input('Ingrese la cantidad de millas disponibles del viajero: '))
 
         l_co = controller.getCities(analyzer, c_origen)
         
@@ -206,6 +206,12 @@ while True:
 
         Data = controller.Lifemiles(analyzer,a_IATA, millas)
 
+        print('--------------------------------------------------------------------')
+        print('El número de nodos conectados al árbol de espansión mínima: ' + str(Data[0]))
+        print('El costo total (distancia [Km]) al árbol de expanxión mínima: ' + str(round(Data[1])))
+        print('La rama más larga:')
+        print(Data[2])
+        print('La cantidad de millas faltantes o excedetes según la distancia total recomendad por la rama más larga es: ' + str(Data[3]))
 
 
 
