@@ -57,9 +57,9 @@ catalog = None
 # ___________________________________________________
 
 
-airpots_file = 'airports-utf8-small.csv'
+airpots_file = 'airports-utf8-large.csv'
 country_file = 'worldcities-utf8.csv'
-routes_file = 'routes-utf8-small.csv'
+routes_file = 'routes-utf8-large.csv'
 initialStation = None
 analyzer = None
 """

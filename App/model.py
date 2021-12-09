@@ -275,20 +275,18 @@ def totalCities(analyzer):
 def totalCities2(analyzer): 
     return lt.size(analyzer['cities2'])
 def getsamples_d(analyzer):
-    mlxpr = gr.vertices(analyzer['connections_d'])
     list_sample = lt.newList(datastructure='ARRAY_LIST')
-    first = lt.getElement(mlxpr,1)
-    last = lt.getElement(mlxpr,lt.size(mlxpr))
-    lt.addLast(list_sample, AeropuertoIATA(analyzer,first))
-    lt.addLast(list_sample, AeropuertoIATA(analyzer,last))
+    first = lt.getElement(analyzer['airports'],1)
+    last = lt.getElement(analyzer['airports'],lt.size(analyzer['airports']))
+    lt.addLast(list_sample,first)
+    lt.addLast(list_sample, last)
     return list_sample
 def getsamples_nd(analyzer):
-    mlxpr = gr.vertices(analyzer['connections_nd'])
     list_sample = lt.newList(datastructure='ARRAY_LIST')
-    first = lt.getElement(mlxpr,1)
-    last = lt.getElement(mlxpr,lt.size(mlxpr))
-    lt.addLast(list_sample, AeropuertoIATA(analyzer,first))
-    lt.addLast(list_sample, AeropuertoIATA(analyzer,last))
+    first = lt.getElement(analyzer['airports'],1)
+    last = lt.getElement(analyzer['airports'],lt.size(analyzer['airports']))
+    lt.addLast(list_sample, first)
+    lt.addLast(list_sample, last)
     return list_sample
 
 def getsamples_city(analyzer):
