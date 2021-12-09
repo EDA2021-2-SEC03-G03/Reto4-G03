@@ -211,7 +211,11 @@ while True:
         print('El costo total (distancia [Km]) al árbol de expanxión mínima: ' + str(round(Data[1])))
         print('La rama más larga:')
         print(Data[2])
-        print('La cantidad de millas faltantes o excedetes según la distancia total recomendad por la rama más larga es: ' + str(Data[3]))
+        print('La distancia total (km) recomendada por la rama más larga es de: ' + str(Data[3]))
+        if Data[4] > 0:
+            print('Te faltan: ' + str(Data[4]/1.6) + ' millas para este recorrido')
+        else:
+            print('Te sobraron: '+ str(round(Data[4]/1.6,2)) + ' millas')
 
 
 

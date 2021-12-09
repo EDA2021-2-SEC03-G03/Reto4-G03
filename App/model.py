@@ -364,7 +364,7 @@ def AeropuertoIATA(analyzer, iata):
 #___________________________________________________
 #Req 4
 def Lifemiles(analyzer,c_origen, millas):
-
+    distance_km = 1.6*millas
     mst = prim.PrimMST(analyzer['connections_nd'])
 
     peso = prim.weightMST(analyzer['connections_nd'], mst)
@@ -381,7 +381,6 @@ def Lifemiles(analyzer,c_origen, millas):
     mayor = 0
     camino = None
     dijta = djk.Dijkstra(analyzer['mst'], primero)
-    listaFuncional = lt.newList('ARRAY_LIST')
 
     for v in lt.iterator(vert):
         if djk.hasPathTo(dijta, v) == True:
@@ -390,10 +389,16 @@ def Lifemiles(analyzer,c_origen, millas):
             if x > mayor:
                 mayor = x
                 camino = ruta
+               
+    distancia = 0
+    for item in lt.iterator(camino):
+        a_sum = item['weight']
+        distancia += float(a_sum)
 
-    num_m = int(mayor) - int(millas)
 
-    return num, peso, camino, num_m
+    residuo = float(distancia) - float(distance_km)
+
+    return num, peso, camino, distancia, residuo
 
 def addVerMst(catalog, pointid):
     try:
@@ -420,7 +425,6 @@ def addPointConneMst(catalog, ver1, ver2, distancia):
         return catalog
     except Exception as exp:
         error.reraise(exp, 'model:addPointConneMst')
-
 
 
 
