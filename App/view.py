@@ -80,27 +80,37 @@ while True:
         arcos_nd = controller.totalConnections(analyzer, 'connections_nd')
 
         cities = controller.totalCities(analyzer)
-        airportLt = analyzer['airports']
+        #airportLt = analyzer['airports']
 
         print('El total de vértices (aeropuertos) del grafo dirigido son:' + str(vertices_d))
         print('El total de arcos (rutas aereas) del grafo dirigido son:' + str(arcos_d))
+
+        print("------------------------------------------------------------------------------------------------")
+        print('El primer aeropuerto cargado del grafo dirigido:')
+
+        print("------------------------------------------------------------------------------------------------")
+        print('El último aeropuerto cargado del grafo dirigido:')
 
         print("----------------------------------------------------------------------------------")
 
         print('El total de vértices (aeropuertos) del grafo no dirigido son:' + str(vertices_nd))
         print('El total de arcos (rutas aereas) del grafo no dirigido son:' + str(arcos_nd))
 
+        print("------------------------------------------------------------------------------------------------")
+        print('El primer aeropuerto cargado del grafo no dirigido:')
+        
+
+        print("------------------------------------------------------------------------------------------------")
+        print('El último aeropuerto cargado del grafo no dirigido:')
+        
+
         print("----------------------------------------------------------------------------------")
         print('El total de ciudades es: ' + str(cities))
 
         #Name,City,Country,IATA,Latitude,Longitude
-        print("------------------------------------------------------------------------------------------------")
-        print('El primer aeropuerto cargado:')
-        print(airportLt['elements'][0])
 
         print("------------------------------------------------------------------------------------------------")
-        print('El último aeropuerto cargado:')
-        print(airportLt['elements'][-1:])
+        print('La primera y última ciudad cargada:')
      
 
 
