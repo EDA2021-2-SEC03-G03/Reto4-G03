@@ -394,11 +394,13 @@ def Lifemiles(analyzer,c_origen, millas):
     previo = ""
     for item in lt.iterator(camino):
         if previo != "":
+            print(previo,item)
             info = gr.getEdge(analyzer["connections_nd"], previo, item)
             a_sum = info['weight']
             previo = item
             distancia += float(a_sum)
-        
+        else:
+            previo = item
 
 
     residuo = float(distancia) - float(distance_km)
