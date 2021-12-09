@@ -80,6 +80,9 @@ while True:
         arcos_nd = controller.totalConnections(analyzer, 'connections_nd')
 
         cities = controller.totalCities(analyzer)
+        first_last_d = controller.getsamples_d(analyzer)
+        first_last_nd = controller.getsamples_nd(analyzer)
+        first_last_city = controller.getsamples_city(analyzer)
         #airportLt = analyzer['airports']
 
         print('El total de vértices (aeropuertos) del grafo dirigido son:' + str(vertices_d))
@@ -87,10 +90,10 @@ while True:
 
         print("------------------------------------------------------------------------------------------------")
         print('El primer aeropuerto cargado del grafo dirigido:')
-
+        print(lt.getElement(first_last_d,1))
         print("------------------------------------------------------------------------------------------------")
         print('El último aeropuerto cargado del grafo dirigido:')
-
+        print(lt.getElement(first_last_d,2))
         print("----------------------------------------------------------------------------------")
 
         print('El total de vértices (aeropuertos) del grafo no dirigido son:' + str(vertices_nd))
@@ -98,21 +101,25 @@ while True:
 
         print("------------------------------------------------------------------------------------------------")
         print('El primer aeropuerto cargado del grafo no dirigido:')
-        
+        print(lt.getElement(first_last_nd,1))
 
         print("------------------------------------------------------------------------------------------------")
         print('El último aeropuerto cargado del grafo no dirigido:')
-        
+        tamano = lt.size(first_last_d)
+        print(lt.getElement(first_last_nd,2))
 
         print("----------------------------------------------------------------------------------")
         print('El total de ciudades es: ' + str(cities))
+        print('La primera ciudad cargada:')
+        print(lt.getElement(first_last_city,1))
 
+        print("------------------------------------------------------------------------------------------------")
+        print('La última ciudad cargada:')
+        print(lt.getElement(first_last_city,2))
         #Name,City,Country,IATA,Latitude,Longitude
 
         print("------------------------------------------------------------------------------------------------")
-        print('La primera y última ciudad cargada:')
      
-
 
     elif int(inputs[0]) == 2:
         #Req 1

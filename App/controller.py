@@ -69,12 +69,15 @@ def loadData(analyzer, airports_file, country_file, routes_file):
         model.addCity(analyzer, city['id'], city)
         model.addCities(analyzer, city['city'], city)
         model.addCodeAirport(analyzer, city['id'], city)
-    
+    return analyzer
     
     #print(analyzer['map_airports']['elements'][0:10])
-
-
-    return analyzer
+def getsamples_d(analyzer):
+    return model.getsamples_d(analyzer)
+def getsamples_nd(analyzer):
+    return model.getsamples_nd(analyzer)
+def getsamples_city(analyzer):
+    return model.getsamples_city(analyzer)
 # Funciones de ordenamiento
 
 # Funciones de consulta sobre el catálogo

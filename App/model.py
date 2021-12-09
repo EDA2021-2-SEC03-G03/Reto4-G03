@@ -94,6 +94,7 @@ def newAnalyzer():
         analyzer['airports'] = lt.newList('ARRAY_LIST')
         analyzer['paths'] = lt.newList('ARRAY_LIST')
         analyzer['airportsAD'] = lt.newList('ARRAY_LIST')
+        analyzer['cities_lt'] = lt.newList('ARRAY_LIST')
         analyzer['mst'] = gr.newGraph(datastructure='ADJ_LIST',
                                             directed=True,
                                             size=5000,
@@ -114,6 +115,7 @@ def addCity(analyzer, cityID, city):
         c = newCity()
         mp.put(cities, cityID, c)
     lt.addLast(c['City'], city)
+    lt.addLast(analyzer['cities_lt'], city)
 
 
 def addCities(analyzer, cityName, city):
@@ -272,6 +274,31 @@ def totalCities(analyzer):
 
 def totalCities2(analyzer): 
     return lt.size(analyzer['cities2'])
+def getsamples_d(analyzer):
+    mlxpr = gr.vertices(analyzer['connections_d'])
+    list_sample = lt.newList(datastructure='ARRAY_LIST')
+    first = lt.getElement(mlxpr,1)
+    last = lt.getElement(mlxpr,lt.size(mlxpr))
+    lt.addLast(list_sample, AeropuertoIATA(analyzer,first))
+    lt.addLast(list_sample, AeropuertoIATA(analyzer,last))
+    return list_sample
+def getsamples_nd(analyzer):
+    mlxpr = gr.vertices(analyzer['connections_nd'])
+    list_sample = lt.newList(datastructure='ARRAY_LIST')
+    first = lt.getElement(mlxpr,1)
+    last = lt.getElement(mlxpr,lt.size(mlxpr))
+    lt.addLast(list_sample, AeropuertoIATA(analyzer,first))
+    lt.addLast(list_sample, AeropuertoIATA(analyzer,last))
+    return list_sample
+
+def getsamples_city(analyzer):
+    pamplona= analyzer['cities_lt']
+    list_sample = lt.newList(datastructure='ARRAY_LIST')
+    first = lt.getElement(pamplona,1)
+    last = lt.getElement(pamplona,lt.size(pamplona))
+    lt.addLast(list_sample, first)
+    lt.addLast(list_sample, last)
+    return list_sample
 #___________________________________________________
 #Req 1
 def getRoutesbyAirport(analyzer):
